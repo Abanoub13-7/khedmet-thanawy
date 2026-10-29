@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#173f35">
+  <title>خدمة ثانوي</title>
+  <link rel="icon" type="image/png" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-mark"><img src="assets/logo-khedmet-thanawy-sm.png" alt="شعار خدمة ثانوي" width="38" height="41"></div>
+    <div class="brand-copy">
+      <h1>خدمة ثانوي</h1>
+      <p>كنيسة الملكة والأنبا إبرام بالتحدي</p>
+    </div>
+    <button id="backupBtn" class="icon-btn" title="نسخة احتياطية" aria-label="نسخة احتياطية">⇩</button>
+  </header>
+
+  <main class="app-shell">
+    <section class="view active" id="dashboardView">
+      <section class="hero" aria-label="الترحيب">
+        <img class="hero-logo-img" src="assets/logo-khedmet-thanawy.png" alt="شعار خدمة ثانوي — كنيسة الملكة والأنبا إبرام بالتحدي" width="640" height="697" decoding="async">
+        <div class="hero-content">
+          <span class="eyebrow">خدمة ثانوي · كنيسة الملكة والأنبا إبرام بالتحدي</span>
+          <h2>إزيك يا تاسوني شيرين ❤️</h2>
+          <p>ربنا يبارك خدمتك، ويثمر تعب محبتك.</p>
+        </div>
+      </section>
+      <div id="nextMeetingCard" class="next-meeting"></div>
+      <div class="stats-grid">
+        <article class="stat-card"><span class="stat-icon">♙</span><span class="stat-label">إجمالي المخدومين</span><strong id="totalStat">0</strong></article>
+        <article class="stat-card"><span class="stat-icon">✓</span><span class="stat-label">حضور آخر اجتماع</span><strong id="presentStat">—</strong></article>
+        <article class="stat-card"><span class="stat-icon">×</span><span class="stat-label">غياب آخر اجتماع</span><strong id="absentStat">—</strong></article>
+        <article class="stat-card"><span class="stat-icon">▦</span><span class="stat-label">الاجتماعات المسجلة</span><strong id="meetingsStat">0</strong></article>
+      </div>
+      <div class="section-heading"><div><h3>المخدومون حسب الصف</h3><p>اضغط على صف لعرض مخدوميه.</p></div></div>
+      <div id="gradeCards" class="grade-grid"></div>
+      <div class="panel">
+        <div class="section-heading"><div><h3>آخر اجتماع مسجل</h3><p id="lastMeetingDate">لا توجد اجتماعات حتى الآن</p></div><button class="text-btn" data-go="attendance">تسجيل حضور</button></div>
+        <div id="lastMeetingSummary" class="empty-state compact">ابدأ بتسجيل أول اجتماع للخدمة.</div>
+      </div>
+      <div class="notice"><span>🔒</span><div><strong>البيانات محفوظة على هذا الجهاز</strong><p>اعمل نسخة احتياطية بانتظام، خصوصًا قبل مسح بيانات المتصفح أو تغيير الموبايل.</p></div></div>
+    </section>
+
+    <section class="view" id="studentsView">
+      <div class="page-heading"><div><span class="eyebrow">قاعدة بيانات الخدمة</span><h2>المخدومون</h2><p>إضافة وتعديل ونقل المخدوم بين الصفوف.</p></div><button id="addStudentBtn" class="primary-btn">＋ إضافة</button></div>
+      <div class="toolbar">
+        <label class="search-box"><span>⌕</span><input id="studentSearch" type="search" placeholder="ابحث بالاسم أو رقم الموبايل"></label>
+        <div class="filter-row">
+          <select id="genderFilter" aria-label="فلتر النوع"><option value="">كل الأنواع</option><option>ولد</option><option>بنت</option><option>غير محدد</option></select>
+          <select id="gradeFilter" aria-label="فلتر الصف"><option value="">كل الصفوف</option><option>أولى ثانوي</option><option>تانية ثانوي</option><option>تالتة ثانوي</option></select>
+          <select id="educationFilter" aria-label="فلتر نوع التعليم"><option value="">كل أنواع التعليم</option><option>عام</option><option>صناعي</option><option>زراعي</option><option>تجاري</option><option value="__none">غير محدد</option></select>
+          <select id="statusFilter" aria-label="فلتر الحالة"><option value="active">نشط</option><option value="inactive">غير نشط</option><option value="all">الكل</option></select>
+          <button type="button" id="clearFiltersBtn" class="soft-btn clear-btn">مسح الفلاتر</button>
+        </div>
+      </div>
+      <div class="results-line" id="studentsCount"></div>
+      <div id="studentsList" class="student-list"></div>
+    </section>
+
+    <section class="view" id="attendanceView">
+      <div class="page-heading"><div><span class="eyebrow">الاجتماعات</span><h2>تسجيل الحضور</h2><p>اجتماع الجمعة يُنشأ تلقائيًا. اختر الصف وحدد حالة كل مخدوم.</p></div></div>
+      <form id="meetingForm" class="panel form-panel">
+        <div class="form-grid">
+          <label class="full-field">الاجتماع<select id="meetingSelect" required></select></label>
+          <label>الصف الدراسي<select id="attendanceGrade"><option value="">كل الصفوف</option><option value="أولى ثانوي" selected>أولى ثانوي</option><option value="تانية ثانوي">تانية ثانوي</option><option value="تالتة ثانوي">تالتة ثانوي</option></select></label>
+          <label>نوع التعليم<select id="attendanceEducation"><option value="">كل الأنواع</option><option>عام</option><option>صناعي</option><option>زراعي</option><option>تجاري</option><option value="__none">غير محدد</option></select></label>
+        </div>
+        <button type="button" class="soft-btn extra-btn" id="openExtraMeetingBtn">＋ إنشاء اجتماع إضافي</button>
+        <div class="attendance-toolbar"><strong id="attendanceListTitle">كشف الحضور</strong><div class="quick-actions"><button type="button" class="soft-btn" id="allPresentBtn">الكل حاضر</button><button type="button" class="soft-btn" id="allAbsentBtn">الكل غائب</button><button type="button" class="soft-btn" id="clearStatusBtn">تفريغ</button></div></div>
+        <div id="attendanceRoster" class="roster"></div>
+        <div class="save-row"><span id="attendanceCount">0 مخدوم</span><button class="primary-btn" type="submit">حفظ الحضور</button></div>
+      </form>
+    </section>
+
+    <section class="view" id="servantsView">
+      <div class="page-heading"><div><span class="eyebrow">فريق الخدمة</span><h2>إدارة الخدام</h2><p>سجّل الخدام ليظهروا في قوائم اختيار المسؤول عن كل فقرة.</p></div><button id="addServantBtn" class="primary-btn">＋ إضافة خادم</button></div>
+      <div class="toolbar">
+        <label class="search-box"><span>⌕</span><input id="servantSearch" type="search" placeholder="ابحث باسم الخادم"></label>
+        <div class="filter-row"><select id="servantStatusFilter" aria-label="فلتر الحالة"><option value="active">نشط</option><option value="inactive">غير نشط</option><option value="all">الكل</option></select><select id="servantSkillFilter" aria-label="فلتر التخصص"><option value="">كل التخصصات</option></select></div>
+      </div>
+      <div class="results-line" id="servantsCount"></div>
+      <div id="servantsList" class="student-list"></div>
+    </section>
+
+    <section class="view" id="plansView">
+      <div id="plansListPane">
+        <div class="page-heading"><div><span class="eyebrow">تنظيم الاجتماعات</span><h2>توزيعة الاجتماعات</h2><p>اختر اجتماعًا لتحديد المسؤول عن كل فقرة ثم صدّر التوزيعة PDF.</p></div><button id="newPlanMeetingBtn" class="primary-btn">＋ اجتماع جديد</button></div>
+        <div class="tabs" id="planTabs" role="tablist"><button class="tab active" data-tab="upcoming">القادمة</button><button class="tab" data-tab="past">السابقة</button><button class="tab" data-tab="cancelled">الملغاة</button><button class="tab" data-tab="all">الكل</button></div>
+        <div id="planMeetingsList" class="plan-list"></div>
+        <button id="editTemplateBtn" class="soft-btn extra-btn">⚙ تعديل الفقرات الافتراضية للاجتماعات الجديدة</button>
+      </div>
+      <div id="planDetailPane" hidden></div>
+    </section>
+
+    <section class="view" id="reportsView">
+      <div class="page-heading"><div><span class="eyebrow">متابعة الانتظام</span><h2>التقارير</h2><p>ملخص الحضور والغياب حسب الفترة.</p></div><button id="exportCsvBtn" class="secondary-btn">تصدير CSV</button></div>
+      <div class="panel report-filters">
+        <label>من تاريخ<input id="reportFrom" type="date"></label>
+        <label>إلى تاريخ<input id="reportTo" type="date"></label>
+        <label>الصف<select id="reportGrade"><option value="">كل الصفوف</option><option>أولى ثانوي</option><option>تانية ثانوي</option><option>تالتة ثانوي</option></select></label>
+        <button id="applyReportBtn" class="primary-btn">عرض التقرير</button>
+      </div>
+      <div class="stats-grid report-stats">
+        <article class="stat-card"><span class="stat-label">عدد الاجتماعات</span><strong id="reportMeetings">0</strong></article>
+        <article class="stat-card"><span class="stat-label">حالات الحضور</span><strong id="reportPresent">0</strong></article>
+        <article class="stat-card"><span class="stat-label">حالات الغياب</span><strong id="reportAbsent">0</strong></article>
+        <article class="stat-card"><span class="stat-label">نسبة الحضور</span><strong id="reportRate">—</strong></article>
+      </div>
+      <p id="reportExcused" class="muted excused-line"></p>
+      <div class="panel"><div class="section-heading"><div><h3>انتظام المخدومين</h3><p>النسبة محسوبة من الاجتماعات التي تم تسجيل حالة المخدوم فيها.</p></div></div><div id="studentReportList" class="report-list"></div></div>
+      <div class="panel"><div class="section-heading"><div><h3>سجل الاجتماعات</h3><p>يمكن مراجعة كشف كل اجتماع أو حذفه.</p></div></div><div id="meetingsList" class="meetings-list"></div></div>
+    </section>
+
+    <section class="view" id="settingsView">
+      <div class="page-heading"><div><span class="eyebrow">إعدادات محلية</span><h2>النسخ الاحتياطي</h2><p>احتفظ بنسخة من بيانات الخدمة واستعدها وقت الحاجة.</p></div></div>
+      <div class="panel settings-card">
+        <div class="settings-icon">⇩</div><div><h3>تصدير نسخة احتياطية</h3><p>تشمل بيانات المخدومين والاجتماعات وسجلات الحضور.</p></div><button id="exportBackupBtn" class="primary-btn">تصدير JSON</button>
+      </div>
+      <div class="panel settings-card">
+        <div class="settings-icon">⇧</div><div><h3>استعادة نسخة احتياطية</h3><p>سيتم استبدال البيانات الحالية بالبيانات الموجودة في الملف المختار. اعمل نسخة من الحالية أولًا.</p></div><label class="secondary-btn file-btn">اختيار ملف<input type="file" id="importBackupInput" accept=".json,application/json" hidden></label>
+      </div>
+      <div class="panel settings-card danger-card">
+        <div class="settings-icon">!</div><div><h3>إعادة ضبط البيانات</h3><p>تحذف بيانات الموقع المحلية وتعيد بيانات الشيت الأصلية. لا يمكن التراجع بدون نسخة احتياطية.</p></div><button id="resetDataBtn" class="danger-btn">إعادة ضبط</button>
+      </div>
+      <div class="notice"><span>ℹ</span><div><strong>مهم قبل الاستخدام الفعلي</strong><p>المشروع محلي على نفس المتصفح والجهاز. لن تتزامن البيانات تلقائيًا مع موبايل آخر، ولا توجد حماية حسابات أو تشفير لقاعدة البيانات في هذه النسخة التجريبية.</p></div></div>
+      <div class="about-line">خدمة ثانوي · إصدار محلي 1.2</div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="التنقل الرئيسي">
+    <button class="nav-item active" data-view="dashboard"><span>⌂</span><small>الرئيسية</small></button>
+    <button class="nav-item" data-view="students"><span>♙</span><small>المخدومون</small></button>
+    <button class="nav-item nav-attendance" data-view="attendance"><span>✓</span><small>الحضور</small></button>
+    <button class="nav-item" data-view="servants"><span>♔</span><small>الخدام</small></button>
+    <button class="nav-item" data-view="plans"><span>☰</span><small>التوزيعة</small></button>
+    <button class="nav-item" data-view="reports"><span>▤</span><small>التقارير</small></button>
+    <button class="nav-item" data-view="settings"><span>⚙</span><small>الإعدادات</small></button>
+  </nav>
+
+  <dialog id="studentDialog" class="modal">
+    <form id="studentForm" method="dialog">
+      <div class="modal-head"><div><span class="eyebrow">بيانات المخدوم</span><h2 id="studentDialogTitle">إضافة مخدوم</h2></div><button type="button" class="close-btn" id="closeStudentDialog" aria-label="إغلاق">×</button></div>
+      <input type="hidden" id="studentId">
+      <div class="form-grid">
+        <label class="full-field">الاسم بالكامل *<input id="studentName" required maxlength="100" autocomplete="name" placeholder="اكتب اسم المخدوم"></label>
+        <label>النوع<select id="studentGender"><option>ولد</option><option>بنت</option><option selected>غير محدد</option></select></label>
+        <label>رقم الموبايل<input id="studentPhone" inputmode="tel" maxlength="20" placeholder="رقم التواصل"></label>
+        <label>صاحب الرقم<select id="studentPhoneOwner"><option value="">غير محدد</option><option>المخدوم</option><option>الأب</option><option>الأم</option><option>الأخ</option><option>الأخت</option><option>ولي الأمر</option><option>قريب آخر</option></select></label>
+        <label>نوع التعليم<select id="studentEducation"><option value="">لم يحدد بعد</option><option>عام</option><option>صناعي</option><option>زراعي</option><option>تجاري</option></select></label>
+        <label>الصف الدراسي<select id="studentGrade" required><option>أولى ثانوي</option><option>تانية ثانوي</option><option>تالتة ثانوي</option></select></label>
+        <label>تاريخ الميلاد (اختياري)<input id="studentBirth" placeholder="مثال: 5/25"></label>
+        <label>العنوان (اختياري)<input id="studentAddress" maxlength="120" placeholder="القرية أو المنطقة"></label>
+        <label class="full-field">ملاحظات (اختياري)<input id="studentNotes" maxlength="250" placeholder="معلومة ضرورية فقط"></label>
+        <label class="checkbox-label full-field"><input id="studentActive" type="checkbox" checked> المخدوم نشط في الخدمة</label>
+      </div>
+      <div class="modal-actions"><button type="button" class="secondary-btn" id="cancelStudentBtn">إلغاء</button><button type="submit" class="primary-btn">حفظ البيانات</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="studentDetailsDialog" class="modal">
+    <div class="modal-head"><div><span class="eyebrow">ملف المخدوم</span><h2 id="detailsName">—</h2></div><button type="button" class="close-btn" id="closeDetailsDialog">×</button></div>
+    <div id="studentDetailsContent"></div>
+    <div class="modal-actions"><button type="button" class="secondary-btn" id="detailsCloseBtn">إغلاق</button><button type="button" class="primary-btn" id="detailsEditBtn">تعديل البيانات</button></div>
+  </dialog>
+
+  <dialog id="extraMeetingDialog" class="modal">
+    <form id="extraMeetingForm" method="dialog">
+      <div class="modal-head"><div><span class="eyebrow">اجتماع خارج الجدول</span><h2>اجتماع إضافي</h2></div><button type="button" class="close-btn" id="closeExtraDialog" aria-label="إغلاق">×</button></div>
+      <div class="form-grid">
+        <label>التاريخ<input type="date" id="extraMeetingDate" required></label>
+        <label>اسم الاجتماع<input id="extraMeetingName" maxlength="70" placeholder="مثال: رحلة الخدمة" required></label>
+      </div>
+      <p class="muted" style="font-size:11px;margin:12px 0 0">لا يؤثر على اجتماعات الجمعة الأسبوعية.</p>
+      <div class="modal-actions"><button type="button" class="secondary-btn" id="cancelExtraBtn">إلغاء</button><button type="submit" class="primary-btn">إنشاء</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="meetingDetailsDialog" class="modal">
+    <div class="modal-head"><div><span class="eyebrow">كشف الاجتماع</span><h2 id="meetingDetailsTitle">—</h2></div><button type="button" class="close-btn" id="closeMeetingDetails">×</button></div>
+    <div id="meetingDetailsContent"></div>
+    <div class="modal-actions"><button type="button" class="secondary-btn" id="meetingDetailsCloseBtn">إغلاق</button></div>
+  </dialog>
+
+  <dialog id="servantDialog" class="modal">
+    <form id="servantForm" method="dialog" novalidate>
+      <div class="modal-head"><div><span class="eyebrow">بيانات الخادم</span><h2 id="servantDialogTitle">إضافة خادم</h2></div><button type="button" class="close-btn" id="closeServantDialog" aria-label="إغلاق">×</button></div>
+      <input type="hidden" id="servantId">
+      <div class="form-grid">
+        <label class="full-field">الاسم الكامل *<input id="servantName" maxlength="80" autocomplete="off" placeholder="اكتب اسم الخادم"><small class="field-error" id="servantNameError"></small></label>
+        <label>رقم الهاتف (اختياري)<input id="servantPhone" inputmode="tel" maxlength="20" placeholder="رقم التواصل"></label>
+        <label>التخصص أو المهارة (اختياري)<input id="servantSkill" list="skillSuggestions" maxlength="40" placeholder="مثال: الترانيم"><datalist id="skillSuggestions"><option value="الترانيم"><option value="الشرح"><option value="تنظيم الاجتماع"><option value="الأسئلة"><option value="الألحان"></datalist></label>
+        <label class="full-field">ملاحظات (اختياري)<input id="servantNotes" maxlength="200" placeholder="معلومة مفيدة"></label>
+        <div class="full-field photo-field"><div class="avatar big" id="servantPhotoPreview">؟</div><div class="photo-actions"><label class="soft-btn file-btn">اختيار صورة (اختياري)<input type="file" id="servantPhotoInput" accept="image/*" hidden></label><button type="button" class="mini-btn" id="servantPhotoRemove">إزالة الصورة</button></div></div>
+        <label class="checkbox-label full-field"><input id="servantActive" type="checkbox" checked> الخادم نشط</label>
+      </div>
+      <div class="modal-actions"><button type="button" class="secondary-btn" id="cancelServantBtn">إلغاء</button><button type="submit" class="primary-btn">حفظ</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="planMeetingDialog" class="modal">
+    <form id="planMeetingForm" method="dialog" novalidate>
+      <div class="modal-head"><div><span class="eyebrow">بيانات الاجتماع</span><h2 id="planMeetingTitle">اجتماع جديد</h2></div><button type="button" class="close-btn" id="closePlanMeeting" aria-label="إغلاق">×</button></div>
+      <input type="hidden" id="pmId">
+      <div class="form-grid">
+        <label class="full-field">اسم الاجتماع *<input id="pmName" maxlength="70" placeholder="اجتماع الخدمة"></label>
+        <label>التاريخ *<input type="date" id="pmDate"></label>
+        <label>الحالة<select id="pmStatus"><option value="upcoming">قادم</option><option value="completed">مكتمل</option><option value="cancelled">ملغي</option></select></label>
+        <label>وقت البداية (اختياري)<input type="time" id="pmStart"></label>
+        <label>وقت النهاية (اختياري)<input type="time" id="pmEnd"></label>
+        <label class="full-field">ملاحظات عامة (اختياري)<textarea id="pmNotes" rows="3" maxlength="600"></textarea></label>
+      </div>
+      <p class="field-error" id="pmError"></p>
+      <div class="modal-actions"><button type="button" class="secondary-btn" id="cancelPlanMeeting">إلغاء</button><button type="submit" class="primary-btn">حفظ</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="templateDialog" class="modal">
+    <form id="templateForm" method="dialog">
+      <div class="modal-head"><div><span class="eyebrow">إعدادات التوزيعة</span><h2>الفقرات الافتراضية</h2></div><button type="button" class="close-btn" id="closeTemplate" aria-label="إغلاق">×</button></div>
+      <label class="stack-label">اكتب كل فقرة في سطر مستقل (بالترتيب المطلوب)<textarea id="templateText" rows="8"></textarea></label>
+      <p class="muted" style="font-size:11px">تُطبَّق على الاجتماعات الجديدة فقط، ولا تغيّر فقرات أي اجتماع موجود.</p>
+      <div class="modal-actions"><button type="button" class="secondary-btn" id="templateReset">الرجوع للافتراضي</button><button type="button" class="secondary-btn" id="cancelTemplate">إلغاء</button><button type="submit" class="primary-btn">حفظ</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="askDialog" class="modal">
+    <div class="modal-head"><div><h2 id="askTitle">تأكيد</h2></div></div>
+    <p id="askMessage" class="ask-message"></p>
+    <ul id="askItems" class="ask-items"></ul>
+    <div class="modal-actions"><button type="button" class="secondary-btn" id="askCancel">إلغاء</button><button type="button" class="primary-btn" id="askOk">موافق</button></div>
+  </dialog>
+
+  <dialog id="previewDialog" class="modal preview-modal">
+    <div class="modal-head"><div><span class="eyebrow">معاينة قبل التصدير</span><h2 id="previewTitle">معاينة PDF</h2></div><button type="button" class="close-btn" id="closePreview" aria-label="إغلاق">×</button></div>
+    <div id="previewPages" class="preview-pages"><div class="empty-hint">جارٍ تجهيز المعاينة…</div></div>
+    <div class="modal-actions wrap"><button type="button" class="secondary-btn" id="previewClose">إغلاق</button><button type="button" class="secondary-btn" id="previewPrint">طباعة</button><button type="button" class="secondary-btn" id="previewShare" hidden>مشاركة</button><button type="button" class="primary-btn" id="previewExport">تصدير PDF</button></div>
+  </dialog>
+  <div id="printArea" aria-hidden="true"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="pdf-assets.js"></script>
+  <script src="pdf.js"></script>
+  <script src="app.js"></script>
+  <script src="plan.js"></script>
+</body>
+</html>
